@@ -1,9 +1,23 @@
 package tqs.lab03.CarInformationSystem;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+
+@Entity
+@Table(name="car")
 public class Car {
    
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long carId;
+    @NotNull
     private String maker;
+    @NotNull
     private String model;
 
     public Car(){}
