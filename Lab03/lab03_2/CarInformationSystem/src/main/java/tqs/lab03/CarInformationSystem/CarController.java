@@ -3,10 +3,9 @@ package tqs.lab03.CarInformationSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/")
@@ -23,6 +22,11 @@ public class CarController {
     @PostMapping("/car")
     public ResponseEntity<Car> createCar(@RequestBody Car car){
         return new ResponseEntity<>(carManagerService.save(car), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/cars")
+    public List<Car> getAllCars(){
+        return carManagerService.getAllCars();
     }
 
 
