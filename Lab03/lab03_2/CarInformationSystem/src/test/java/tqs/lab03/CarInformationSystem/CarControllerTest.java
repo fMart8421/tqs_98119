@@ -1,10 +1,12 @@
 package tqs.lab03.CarInformationSystem;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -12,9 +14,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.hamcrest.CoreMatchers;
 
@@ -24,9 +28,10 @@ public class CarControllerTest {
     @Autowired
     private MockMvc mvc;
 
-
     @MockBean
     private CarManagerService carManagerService;
+
+
 
 
     @Test
@@ -65,6 +70,21 @@ public class CarControllerTest {
         ;
 
         verify(carManagerService, times(1)).getAllCars();
+    }
+
+    @Test
+    void whenGetCarById_returnCarWithId() throws Exception{
+        Car golf = new Car((long) 1,"Volkswagen", "Golf");
+
+        when(carManagerService.getCarById(Mockito.anyLong())).thenReturn(golf);
+        mvc.perform(
+                get("/car").param("id","1")
+        )
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id", CoreMatchers.is((long)1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].maker", CoreMatchers.is("Volkswagen")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].model", CoreMatchers.is("Golf")));
+        verify(carManagerService, times(1)).getCarById(Mockito.anyLong());
     }
 
     
