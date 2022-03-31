@@ -11,6 +11,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.hamcrest.CoreMatchers;
 
@@ -41,5 +45,28 @@ public class CarControllerTest {
         verify(carManagerService, times(1)).save(Mockito.any());
     }
 
+    @Test 
+    void givenCars_whenGetAllCars_thenReturnJsonArrayWithAllCars() throws Exception {
+        Car golf = new Car("Volkswagen", "Golf");
+        Car ibiza = new Car("Seat", "Ibiza");
+        Car s90d = new Car("Tesla", "S90D");
+
+        List<Car> allCars = Arrays.asList(golf, ibiza, s90d);
+
+        when(carManagerService.getAllCars()).thenReturn(allCars);
+
+        mvc.perform(
+          get("/cars").contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].maker", CoreMatchers.is("Volkswagen")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].maker", CoreMatchers.is("Seat")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].model", CoreMatchers.is("Ibiza")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].maker", CoreMatchers.is("Tesla")))
+        ;
+
+        verify(carManagerService, times(1)).getAllCars();
+    }
+
+    
     
 }
