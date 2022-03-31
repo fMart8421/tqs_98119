@@ -26,6 +26,11 @@ public class Car {
         this.maker = maker;
         this.model = model;
     }
+    public Car(Long id, String maker, String model) {
+        this.carId= id;
+        this.maker = maker;
+        this.model = model;
+    }
 
     public String getMaker() {
         return this.maker;

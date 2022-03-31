@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/")
@@ -27,6 +28,11 @@ public class CarController {
     @GetMapping("/cars")
     public List<Car> getAllCars(){
         return carManagerService.getAllCars();
+    }
+
+    @GetMapping("/car")
+    public Car getCarById(@RequestAttribute Long id){
+        return carManagerService.getCarById(id);
     }
 
 
