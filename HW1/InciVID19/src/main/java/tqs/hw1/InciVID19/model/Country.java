@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "city")
-public class City {
+public class Country {
 
     @Id
     @GeneratedValue
@@ -28,15 +28,15 @@ public class City {
     private long lastUpdate;
 
     /* Constructors */
-    public City() {
+    public Country() {
     }
 
-    public City(String name, String slug) {
+    public Country(String name, String slug) {
         this.name = name;
         this.slug = slug;
     }
 
-    public City(String name, String slug, Double lat, Double lon, int confirmed, int deaths, int recovered, int active, long lastUpdate) {
+    public Country(String name, String slug, Double lat, Double lon, int confirmed, int deaths, int recovered, int active, long lastUpdate) {
         this.name = name;
         this.slug = slug;
         this.lat = lat;
@@ -93,7 +93,7 @@ public class City {
     @Override
     public String toString() {
         // IntelliJ's auto-generated method
-        return "City { " +
+        return "Country { " +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", slug='" + slug + '\'' +
