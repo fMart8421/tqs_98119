@@ -14,7 +14,6 @@ public class Country {
 
     /* Country details */
     private String name;
-    private String slug; // the name used to fetch data in the API
     private Double lat;
     private Double lon;
 
@@ -31,14 +30,12 @@ public class Country {
     public Country() {
     }
 
-    public Country(String name, String slug) {
+    public Country(String name) {
         this.name = name;
-        this.slug = slug;
     }
 
-    public Country(String name, String slug, Double lat, Double lon, int confirmed, int deaths, int recovered, int active, long lastUpdate) {
+    public Country(String name, Double lat, Double lon, int confirmed, int deaths, int recovered, int active,Double rate, long lastUpdate) {
         this.name = name;
-        this.slug = slug;
         this.lat = lat;
         this.lon = lon;
         this.confirmed = confirmed;
@@ -86,9 +83,6 @@ public class Country {
         return name;
     }
 
-    public String getSlug() {
-        return slug;
-    }
 
     @Override
     public String toString() {
@@ -96,7 +90,6 @@ public class Country {
         return "Country { " +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", slug='" + slug + '\'' +
                 ", lat=" + lat +
                 ", lon=" + lon +
                 ", confirmed=" + confirmed +
