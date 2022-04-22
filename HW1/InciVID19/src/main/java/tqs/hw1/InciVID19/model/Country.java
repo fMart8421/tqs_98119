@@ -87,4 +87,20 @@ public class Country {
     public String getContinent() {
         return continent;
     }
+
+    @Override
+    public String toString() {
+        return "Country{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", continent='" + continent + '\'' +
+                ", newCases=" + newCases +
+                ", activeCases=" + activeCases +
+                ", totalCases=" + totalCases +
+                ", recovered=" + recovered +
+                ", newDeaths=" + newDeaths +
+                ", totalDeaths=" + totalDeaths +
+                ", dataDate='" + dataDate +
+                "'}";
+    }
 }
