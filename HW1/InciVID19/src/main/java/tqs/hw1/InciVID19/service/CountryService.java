@@ -12,7 +12,10 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
@@ -21,76 +24,61 @@ import java.util.logging.Logger;
 @Transactional
 /**
  * This is the class that commutes with the external API.<br/>
- * All the requests are done within this class. The methods are divided in two cases, the <strong><i>WithoutParameters</i></strong> and the <strong><i>Default</i></strong>, which is with parameters. The WithoutParameters methods are used to get Country information to be displayed like an autocomplete, for example.
-* */
+ *
+ * */
 public class CountryService {
 
 
     Logger log = Logger.getLogger(InciVid19Application.class.getName());
 
-    public List<Country> getCountriesWithoutParameters(){
+    public Country getCountryByNameAndDay(String name, String day){
+        return null;
+    }
+    public Country getCountryLatest(String name){
         return null;
     }
 
-    public Country getCountryByNameDefault(){
-        return null;
-    }
 
-
-    protected List<Country> fetchApi(String url) throws IOException, InterruptedException {
-        List<Country> countryList = new ArrayList<>();
+    protected Country fetchApi(String url) throws IOException, InterruptedException, ParseException {
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder(
-                URI.create(url)
-        ).header("get", "application/json")
+                URI.create(url))
+                .header("X-RapidAPI-Host", "covid-193.p.rapidapi.com")
+                .header("X-RapidAPI-Key", "acecd734a4mshef70883ef4d9fecp1eea98jsn284c3cd02d1f")
+                .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         String body = response.body();
 
         JSONObject jsonBody = new JSONObject(body);
-        JSONArray features = jsonBody.getJSONArray("features");
+        JSONObject results = jsonBody.getJSONArray("response").getJSONObject(0);
+        JSONObject cases = results.getJSONObject("cases");
+        JSONObject deaths = results.getJSONObject("deaths");
 
-        for(int i=0; i<features.length();i++){
-            JSONObject countryAttributes = features.getJSONObject(i).getJSONObject("attributes");
-            JSONObject countryCoordinates = features.getJSONObject(i).getJSONObject("geometry");
-            countryList.add(
-              new Country(
-                      countryAttributes.getString("Country_Region"),
-                      countryCoordinates.getDouble("x"),
-                      countryCoordinates.getDouble("y"),
-                      countryAttributes.getInt("Confirmed"),
-                      countryAttributes.getInt("Deaths"),
-                      countryAttributes.getInt("Recovered"),
-                      countryAttributes.getInt("Active"),
-                      countryAttributes.getDouble("Incident_Rate"),
-                      countryAttributes.getLong("Last_Update")
-                      )
-            );
-        }
+        return new Country(
+                      results.getString("country"),
+                      results.getString("continent"),
+                      cases.getInt("new"),
+                      cases.getInt("active"),
+                      cases.getInt("total"),
+                      cases.getInt("recovered"),
+                      deaths.getInt("new"),
+                      deaths.getInt("total"),
+                      DateFormat.getDateInstance().parse(results.getString("day"))
+                      );
 
-        return countryList;
     }
 
 
-    protected String createUrl(String name, List<String> parameters){
-        StringBuilder sb = new StringBuilder("https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/ncov_cases2_v1/FeatureServer/2/query?where=");
-        if(name.equals("")){
-            sb.append("1%3D1");
-        } else {
-            sb.append("Country_Region%20%3D%20'")
-                    .append(name.replace(" ", "%20").toUpperCase(Locale.ROOT))
-                    .append("'")
-            ;
-        }
-        StringBuilder params = new StringBuilder();
-        for (int i = 0; i < parameters.size(); i++) {
-            if (i==parameters.size()-1) params.append(parameters.get(i));
-            else params.append(parameters.get(i)).append(",");
-        }
-
-        sb.append(params)
-        .append("&outSR=4326&f=json");
-
+    protected String createUrl(String country, String day){
+        StringBuilder sb = new StringBuilder("https://covid-193.p.rapidapi.com/history?");
+        sb.append("country=").append(country)
+                             .append("&day=").append(day);
+        return sb.toString();
+    }
+    protected String createUrl(String country){
+        StringBuilder sb = new StringBuilder("https://covid-193.p.rapidapi.com/history?");
+        sb.append("country=").append(country);
         return sb.toString();
     }
 

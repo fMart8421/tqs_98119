@@ -2,6 +2,7 @@ package tqs.hw1.InciVID19.model;
 
 
 import javax.persistence.*;
+import java.util.Date;
 
 
 @Entity
@@ -14,35 +15,38 @@ public class Country {
 
     /* Country details */
     private String name;
-    private Double lat;
-    private Double lon;
+    private String continent;
 
     /* Covid-related details */
-    private int confirmed;
-    private int deaths;
+    private int newCases;
+    private int activeCases;
+    private int totalCases;
     private int recovered;
-    private int active;
+    private int newDeaths;
+    private int totalDeaths;
 
     /* Last data update in milliseconds since Epoch */
-    private long lastUpdate;
+    private Date dataDate;
 
     /* Constructors */
     public Country() {
     }
 
-    public Country(String name) {
+    public Country(String name, String continent) {
         this.name = name;
+        this.continent = continent;
     }
 
-    public Country(String name, Double lat, Double lon, int confirmed, int deaths, int recovered, int active,Double rate, long lastUpdate) {
+    public Country(String name,String continent, int newCases, int activeCases,int totalCases,int recovered, int newDeaths, int totalDeaths, Date dataDate) {
         this.name = name;
-        this.lat = lat;
-        this.lon = lon;
-        this.confirmed = confirmed;
-        this.deaths = deaths;
+        this.continent = continent;
+        this.newCases = newCases;
+        this.activeCases = activeCases;
+        this.totalCases = totalCases;
+        this.newDeaths = newDeaths;
+        this.totalDeaths = totalDeaths;
         this.recovered = recovered;
-        this.active = active;
-        this.lastUpdate = lastUpdate;
+        this.dataDate = dataDate;
     }
 
     /* Getters */
@@ -51,52 +55,36 @@ public class Country {
         return id;
     }
 
-    public Double getLat() {
-        return lat;
+    public Date getDataDate() {
+        return dataDate;
     }
 
-    public Double getLon() {
-        return lon;
+    public int getActiveCases() {
+        return activeCases;
     }
 
-    public int getActive() {
-        return active;
+    public int getNewCases() {
+        return newCases;
     }
 
-    public int getConfirmed() {
-        return confirmed;
+    public int getNewDeaths() {
+        return newDeaths;
     }
 
-    public int getDeaths() {
-        return deaths;
+    public int getTotalDeaths() {
+        return totalDeaths;
     }
 
     public int getRecovered() {
         return recovered;
     }
 
-    public long getLastUpdate() {
-        return lastUpdate;
-    }
 
     public String getName() {
         return name;
     }
 
-
-    @Override
-    public String toString() {
-        // IntelliJ's auto-generated method
-        return "Country { " +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", lat=" + lat +
-                ", lon=" + lon +
-                ", confirmed=" + confirmed +
-                ", deaths=" + deaths +
-                ", recovered=" + recovered +
-                ", active=" + active +
-                ", lastUpdate=" + lastUpdate +
-                '}';
+    public String getContinent() {
+        return continent;
     }
 }

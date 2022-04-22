@@ -17,15 +17,14 @@ public class CountryController {
     @Autowired
     CountryService countryService;
 
-    @GetMapping("no_parameters/cities")
-    public List<Country> getAllCountries() throws IOException{
-        return countryService.getCountriesWithoutParameters();
+    @GetMapping("/{country}")
+    public Country getCountry(@PathVariable(value="country")String country) throws IOException{
+        return countryService.getCountryLatest(country);
     }
 
-    @GetMapping("/cities/{name}")
-    public List<Country> getCountryByName(@PathVariable(value = "name")String name) throws IOException{
-        return countryService.getCountriesWithoutParameters();
+    @GetMapping("/{country}/{date}")
+    public Country getCountryWithDate(@PathVariable(value="country")String country, @PathVariable(value="date") String date) throws IOException{
+        return countryService.getCountryByNameAndDay(country, date);
     }
-
 
 }
