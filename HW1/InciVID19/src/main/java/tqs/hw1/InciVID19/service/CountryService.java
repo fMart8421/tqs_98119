@@ -29,13 +29,24 @@ import java.util.logging.Logger;
 public class CountryService {
 
 
-    Logger log = Logger.getLogger(InciVid19Application.class.getName());
+    //Logger log = Logger.getLogger(InciVid19Application.class.getName());
 
     public Country getCountryByNameAndDay(String name, String day){
         return null;
     }
-    public Country getCountryLatest(String name){
-        return null;
+    public Country getCountryLatest(String country){
+        country = country.toLowerCase(Locale.ROOT);
+        Country result = null;
+        try {
+            result = fetchApi(createUrl(country));}
+        catch(IOException e){
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 
@@ -58,13 +69,13 @@ public class CountryService {
         return new Country(
                       results.getString("country"),
                       results.getString("continent"),
-                      cases.getInt("new"),
-                      cases.getInt("active"),
-                      cases.getInt("total"),
-                      cases.getInt("recovered"),
-                      deaths.getInt("new"),
-                      deaths.getInt("total"),
-                      DateFormat.getDateInstance().parse(results.getString("day"))
+                      cases.optInt("new"),
+                      cases.optInt("active"),
+                      cases.optInt("total"),
+                      cases.optInt("recovered"),
+                      deaths.optInt("new"),
+                      deaths.optInt("total"),
+                      results.getString("day")
                       );
 
     }
