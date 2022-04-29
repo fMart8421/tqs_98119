@@ -3,6 +3,7 @@ package tqs.hw1.InciVID19.model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 
 @Entity
@@ -25,8 +26,8 @@ public class Country {
     private int newDeaths;
     private int totalDeaths;
 
-    /* Last data update in milliseconds since Epoch */
-    private Date dataDate;
+    /* Date of the data retrieved */
+    private String day;
 
     /* Constructors */
     public Country() {
@@ -37,7 +38,7 @@ public class Country {
         this.continent = continent;
     }
 
-    public Country(String name,String continent, int newCases, int activeCases,int totalCases,int recovered, int newDeaths, int totalDeaths, Date dataDate) {
+    public Country(String name,String continent, int newCases, int activeCases,int totalCases,int recovered, int newDeaths, int totalDeaths, String day) {
         this.name = name;
         this.continent = continent;
         this.newCases = newCases;
@@ -46,7 +47,7 @@ public class Country {
         this.newDeaths = newDeaths;
         this.totalDeaths = totalDeaths;
         this.recovered = recovered;
-        this.dataDate = dataDate;
+        this.day = day;
     }
 
     /* Getters */
@@ -55,8 +56,8 @@ public class Country {
         return id;
     }
 
-    public Date getDataDate() {
-        return dataDate;
+    public String getDay() {
+        return day;
     }
 
     public int getActiveCases() {
@@ -100,7 +101,20 @@ public class Country {
                 ", recovered=" + recovered +
                 ", newDeaths=" + newDeaths +
                 ", totalDeaths=" + totalDeaths +
-                ", dataDate='" + dataDate +
+                ", day='" + day +
                 "'}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Country country = (Country) o;
+        return newCases == country.newCases && activeCases == country.activeCases && totalCases == country.totalCases && recovered == country.recovered && newDeaths == country.newDeaths && totalDeaths == country.totalDeaths && name.equals(country.name) && continent.equals(country.continent) && day.equals(country.day);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, continent, newCases, activeCases, totalCases, recovered, newDeaths, totalDeaths, day);
     }
 }
