@@ -1,15 +1,14 @@
 package tqs.hw1.InciVID19.cache;
 
+import org.springframework.stereotype.Component;
 import tqs.hw1.InciVID19.model.Country;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+@Component
 public class CountryCache {
 
-    private final Map<Integer, Country> cache;
+    private final Map<String, Country> cache;
     private List<Country> orderedValues;
     private int size;
     private final int capacity;
@@ -24,13 +23,13 @@ public class CountryCache {
     }
 
     public void put(Country value){
-        if(value == null){
+        if(value == null) {
             System.err.println("Cannot write a null object to cache");
             return;
         }
-        if(!cache.containsKey(value.hashCode())){
+        if(!cache.containsKey(value.getName().toLowerCase(Locale.ROOT))){
             if(size()>=capacity){
-                cache.remove(orderedValues.get(0).hashCode());
+                cache.remove(orderedValues.get(0).getName().toLowerCase(Locale.ROOT));
                 orderedValues.remove(0);
                 orderedValues.add(value);
             }
@@ -38,17 +37,18 @@ public class CountryCache {
                 size++;
             }
             orderedValues.add(value);
-            cache.put(value.hashCode(),value);
+            cache.put(value.getName().toLowerCase(Locale.ROOT),value);
         }
     }
 
-    public Country get(int key){
+    public Country get(String key){
         requests++;
         if(!cache.containsKey(key)){
             misses++;
             return null;
         }
         onGetRefreshOrder(orderedValues.indexOf(cache.get(key)));
+        hits++;
         return cache.get(key);
     }
 
