@@ -2,8 +2,10 @@ package tqs.hw1.InciVID19.service;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tqs.hw1.InciVID19.InciVid19Application;
+import tqs.hw1.InciVID19.cache.CountryCache;
 import tqs.hw1.InciVID19.model.Country;
 
 import javax.transaction.Transactional;
@@ -31,21 +33,45 @@ public class CountryService {
 
     //Logger log = Logger.getLogger(InciVid19Application.class.getName());
 
-    public Country getCountryByNameAndDay(String name, String day){
-        return null;
+    @Autowired
+    private CountryCache countryCache;
+
+    public Country getCountryByNameAndDay(String country, String day){
+        country = country.toLowerCase(Locale.ROOT);
+        Country result = countryCache.get(country);
+        if(result==null){
+            try {
+                result = fetchApi(createUrl(country, day));
+                countryCache.put(result);
+            }
+            catch(IOException e){
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
     }
     public Country getCountryLatest(String country){
         country = country.toLowerCase(Locale.ROOT);
-        Country result = null;
-        try {
-            result = fetchApi(createUrl(country));}
-        catch(IOException e){
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        Country result = countryCache.get(country);
+        if (result==null){
+            try {
+                result = fetchApi(createUrl(country));
+                countryCache.put(result);
+            }
+            catch(IOException e){
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
         return result;
     }
 
@@ -62,22 +88,25 @@ public class CountryService {
         String body = response.body();
 
         JSONObject jsonBody = new JSONObject(body);
-        JSONObject results = jsonBody.getJSONArray("response").getJSONObject(0);
-        JSONObject cases = results.getJSONObject("cases");
-        JSONObject deaths = results.getJSONObject("deaths");
-
-        return new Country(
-                      results.getString("country"),
-                      results.getString("continent"),
-                      cases.optInt("new"),
-                      cases.optInt("active"),
-                      cases.optInt("total"),
-                      cases.optInt("recovered"),
-                      deaths.optInt("new"),
-                      deaths.optInt("total"),
-                      results.getString("day")
-                      );
-
+        int results = jsonBody.getInt("results");
+        Country countryResult=null;
+        if (results > 0) {
+            JSONObject responseItems = jsonBody.getJSONArray("response").getJSONObject(0);
+            JSONObject cases = responseItems.getJSONObject("cases");
+            JSONObject deaths = responseItems.getJSONObject("deaths");
+            countryResult = new Country(
+                    responseItems.getString("country"),
+                    responseItems.getString("continent"),
+                    cases.optInt("new"),
+                    cases.optInt("active"),
+                    cases.optInt("total"),
+                    cases.optInt("recovered"),
+                    deaths.optInt("new"),
+                    deaths.optInt("total"),
+                    responseItems.getString("day")
+            );
+        }
+        return countryResult;
     }
 
 
