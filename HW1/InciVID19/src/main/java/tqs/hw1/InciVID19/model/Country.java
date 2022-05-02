@@ -64,6 +64,10 @@ public class Country {
         return activeCases;
     }
 
+    public int getTotalCases() {
+        return totalCases;
+    }
+
     public int getNewCases() {
         return newCases;
     }
