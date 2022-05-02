@@ -58,7 +58,7 @@ public class ControllerTest {
         CountryCacheDetails details = new CountryCacheDetails(1,0,1);
         when(countryService.getCountryByNameAndDay("portugal", "2022-03-15")).thenReturn(portugal);
         when(countryService.getCacheDetails()).thenReturn(details);
-        
+
 
         mockMvc.perform(get("/api/country-date").param("name", "portugal").param("date", "2022-03-15").contentType(MediaType.APPLICATION_JSON));
         mockMvc.perform(get("/api/cache-details").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(jsonPath("$.misses", is(1))).andExpect(jsonPath("$.requests", is(1))).andExpect(jsonPath("$.hits", is(0)));

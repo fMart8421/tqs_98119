@@ -36,10 +36,10 @@ public class CountryService {
                 countryCache.put(result.getName().toLowerCase(Locale.ROOT)+result.getDay(), result);
             }
             catch(IOException | ParseException e){
-                log.log(Level.SEVERE, "ERROR: ", e);
+                log.log(Level.SEVERE, "There was an exception: ", e);
 
             } catch(InterruptedException e){
-                log.log(Level.SEVERE, "ERROR: ", e);
+                log.log(Level.SEVERE, "The thread was interrupted: ", e);
                 Thread.currentThread().interrupt();
             }
         }
@@ -55,10 +55,10 @@ public class CountryService {
                 countryCache.put(result);
             }
             catch(IOException | ParseException e){
-                log.log(Level.SEVERE, "ERROR: ", e);
+                log.log(Level.SEVERE, "An exception occurred: ", e);
 
             } catch(InterruptedException e){
-                log.log(Level.SEVERE, "ERROR: ", e);
+                log.log(Level.SEVERE, "The thread was interrupted: ", e);
                 Thread.currentThread().interrupt();
             }
         }
