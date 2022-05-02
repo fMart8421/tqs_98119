@@ -19,7 +19,7 @@ public class InciVid19Application  {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("*")
+				registry.addMapping("/**").allowedOrigins("http://localhost:3000")
 						.allowedMethods("GET", "POST", "DELETE", "PUT")
 						.allowedHeaders("Content-Type", "Access-Control-Allow-Origin")
 				;
