@@ -34,10 +34,7 @@ public class CountryService {
 
     //Logger log = Logger.getLogger(InciVid19Application.class.getName());
 
-
-    private CountryCache latestCountryCache = new CountryCache();
-
-
+    @Autowired
     private CountryCache countryCache = new CountryCache();
 
     public Country getCountryByNameAndDay(String country, String day){
@@ -61,11 +58,11 @@ public class CountryService {
     }
     public Country getCountryLatest(String country){
         country = country.toLowerCase(Locale.ROOT);
-        Country result = latestCountryCache.get(country);
+        Country result = countryCache.get(country);
         if (result==null){
             try {
                 result = fetchApi(createUrl(country));
-                latestCountryCache.put(result);
+                countryCache.put(result);
             }
             catch(IOException e){
                 e.printStackTrace();
@@ -81,9 +78,9 @@ public class CountryService {
 
     public CountryCacheDetails getCacheDetails(){
         int hits, misses, requests;
-        hits= latestCountryCache.getHits() + countryCache.getHits();
-        misses = latestCountryCache.getMisses() + countryCache.getMisses();
-        requests = latestCountryCache.getRequests() + countryCache.getRequests();
+        hits= countryCache.getHits();
+        misses =countryCache.getMisses();
+        requests = countryCache.getRequests();
         return new CountryCacheDetails(misses, hits, requests);
     }
 
@@ -108,17 +105,32 @@ public class CountryService {
             JSONObject responseItems = jsonBody.getJSONArray("response").getJSONObject(0);
             JSONObject cases = responseItems.getJSONObject("cases");
             JSONObject deaths = responseItems.getJSONObject("deaths");
-            countryResult = new Country(
-                    responseItems.getString("country"),
-                    responseItems.getString("continent"),
-                    Integer.parseInt(cases.optString("new", "0").replace("+", "")),
-                    cases.optInt("active"),
-                    cases.optInt("total"),
-                    cases.optInt("recovered"),
-                    Integer.parseInt(deaths.optString("new", "0").replace("+", "")),
-                    deaths.optInt("total"),
-                    responseItems.getString("day")
-            );
+            try{
+                countryResult = new Country(
+                        responseItems.getString("country"),
+                        responseItems.getString("continent"),
+                        Integer.parseInt(cases.optString("new", "0").replace("+", "")),
+                        cases.optInt("active"),
+                        cases.optInt("total"),
+                        cases.optInt("recovered"),
+                        Integer.parseInt(deaths.optString("new", "0").replace("+", "")),
+                        deaths.optInt("total"),
+                        responseItems.getString("day")
+                );
+            } catch (NumberFormatException e){
+                countryResult = new Country(
+                        responseItems.getString("country"),
+                        responseItems.getString("continent"),
+                        cases.optInt("new"),
+                        cases.optInt("active"),
+                        cases.optInt("total"),
+                        cases.optInt("recovered"),
+                        deaths.optInt("new"),
+                        deaths.optInt("total"),
+                        responseItems.getString("day")
+                );
+            }
+
         }
         return countryResult;
     }
@@ -137,5 +149,7 @@ public class CountryService {
         System.out.println("Fetched: "+ sb.toString());
         return sb.toString();
     }
+
+
 
 }
