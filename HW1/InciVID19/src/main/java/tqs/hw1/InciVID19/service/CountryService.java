@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tqs.hw1.InciVID19.InciVid19Application;
 import tqs.hw1.InciVID19.cache.CountryCache;
+import tqs.hw1.InciVID19.cache.CountryCacheDetails;
 import tqs.hw1.InciVID19.model.Country;
 
 import javax.transaction.Transactional;
@@ -33,16 +34,19 @@ public class CountryService {
 
     //Logger log = Logger.getLogger(InciVid19Application.class.getName());
 
-    @Autowired
-    private CountryCache countryCache;
+
+    private CountryCache latestCountryCache = new CountryCache();
+
+
+    private CountryCache countryCache = new CountryCache();
 
     public Country getCountryByNameAndDay(String country, String day){
         country = country.toLowerCase(Locale.ROOT);
-        Country result = countryCache.get(country);
+        Country result = countryCache.get(country+day);
         if(result==null){
             try {
                 result = fetchApi(createUrl(country, day));
-                countryCache.put(result);
+                countryCache.put(result.getName().toLowerCase(Locale.ROOT)+result.getDay(), result);
             }
             catch(IOException e){
                 e.printStackTrace();
@@ -57,11 +61,11 @@ public class CountryService {
     }
     public Country getCountryLatest(String country){
         country = country.toLowerCase(Locale.ROOT);
-        Country result = countryCache.get(country);
+        Country result = latestCountryCache.get(country);
         if (result==null){
             try {
                 result = fetchApi(createUrl(country));
-                countryCache.put(result);
+                latestCountryCache.put(result);
             }
             catch(IOException e){
                 e.printStackTrace();
@@ -75,7 +79,17 @@ public class CountryService {
         return result;
     }
 
+    public CountryCacheDetails getCacheDetails(){
+        int hits, misses, requests;
+        hits= latestCountryCache.getHits() + countryCache.getHits();
+        misses = latestCountryCache.getMisses() + countryCache.getMisses();
+        requests = latestCountryCache.getRequests() + countryCache.getRequests();
+        return new CountryCacheDetails(misses, hits, requests);
+    }
 
+
+
+    ///
     protected Country fetchApi(String url) throws IOException, InterruptedException, ParseException {
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder(
@@ -97,11 +111,11 @@ public class CountryService {
             countryResult = new Country(
                     responseItems.getString("country"),
                     responseItems.getString("continent"),
-                    cases.optInt("new"),
+                    Integer.parseInt(cases.optString("new", "0").replace("+", "")),
                     cases.optInt("active"),
                     cases.optInt("total"),
                     cases.optInt("recovered"),
-                    deaths.optInt("new"),
+                    Integer.parseInt(deaths.optString("new", "0").replace("+", "")),
                     deaths.optInt("total"),
                     responseItems.getString("day")
             );
@@ -114,11 +128,13 @@ public class CountryService {
         StringBuilder sb = new StringBuilder("https://covid-193.p.rapidapi.com/history?");
         sb.append("country=").append(country)
                              .append("&day=").append(day);
+        System.out.println("Fetched: "+ sb.toString());
         return sb.toString();
     }
     protected String createUrl(String country){
         StringBuilder sb = new StringBuilder("https://covid-193.p.rapidapi.com/history?");
         sb.append("country=").append(country);
+        System.out.println("Fetched: "+ sb.toString());
         return sb.toString();
     }
 
