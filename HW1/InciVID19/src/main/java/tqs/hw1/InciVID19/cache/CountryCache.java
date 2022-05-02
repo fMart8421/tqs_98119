@@ -9,17 +9,24 @@ import java.util.*;
 public class CountryCache {
 
     private final Map<String, Country> cache;
-    private List<Country> orderedValues;
+    private List<String> orderedKeys;
     private int size;
     private final int capacity;
     private int hits;                                       // number of items requested that were in the cache
     private int misses;                                     // number of items requested that were not in the cache
     private int requests;
 
+
+    public CountryCache(){
+        capacity = 15;
+        cache = new HashMap<>(capacity);
+        orderedKeys = new ArrayList<>();
+    }
+
     public CountryCache(int capacity){
         this.capacity=capacity;
         cache = new HashMap<>(capacity);
-        orderedValues = new ArrayList<>();
+        orderedKeys = new ArrayList<>();
     }
 
     public void put(Country value){
@@ -28,26 +35,48 @@ public class CountryCache {
             return;
         }
         if(!cache.containsKey(value.getName().toLowerCase(Locale.ROOT))){
+            System.out.println("Putting object with key: "+value.getName().toLowerCase(Locale.ROOT));
             if(size()>=capacity){
-                cache.remove(orderedValues.get(0).getName().toLowerCase(Locale.ROOT));
-                orderedValues.remove(0);
-                orderedValues.add(value);
+                cache.remove(orderedKeys.get(0));
+                orderedKeys.remove(0);
             }
             else{
                 size++;
             }
-            orderedValues.add(value);
+            orderedKeys.add(value.getName());
             cache.put(value.getName().toLowerCase(Locale.ROOT),value);
+        }
+    }
+    public void put(String key,Country value){
+
+        if(value == null) {
+            System.err.println("Cannot write a null object to cache");
+            return;
+        }
+        if(!cache.containsKey(key)){
+            System.out.println("Putting object with key: "+key);
+            if(size()>=capacity){
+                cache.remove(orderedKeys.get(0));
+                orderedKeys.remove(0);
+            }
+            else{
+                size++;
+            }
+            orderedKeys.add(key);
+            cache.put(key,value);
         }
     }
 
     public Country get(String key){
+        System.out.println("Getting object with key: "+key);
+        key = key.toLowerCase(Locale.ROOT);
         requests++;
         if(!cache.containsKey(key)){
+            System.err.println("Error -> No object with key: "+key);
             misses++;
             return null;
         }
-        onGetRefreshOrder(orderedValues.indexOf(cache.get(key)));
+        onGetRefreshOrder(orderedKeys.indexOf(key));
         hits++;
         return cache.get(key);
     }
@@ -69,12 +98,14 @@ public class CountryCache {
     }
 
     protected void onGetRefreshOrder(int index){
-        Country lastGet = orderedValues.get(index);
-        List<Country> temporaryList = new ArrayList<>();
-        temporaryList.add(lastGet);
-        for (int i = 0; i < size; i++) {
-            if(i!=index) temporaryList.add(orderedValues.get(i));
+        if(index>0) {
+            String lastGet = orderedKeys.get(index);
+            List<String> temporaryList = new ArrayList<>();
+            temporaryList.add(lastGet);
+            for (int i = 0; i < size; i++) {
+                if (i != index) temporaryList.add(orderedKeys.get(i));
+            }
+            orderedKeys = temporaryList;
         }
-        orderedValues = temporaryList;
     }
 }
