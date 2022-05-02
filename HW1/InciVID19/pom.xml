@@ -14,7 +14,7 @@
 	<name>InciVID19</name>
 	<description>API for the HW1 project, regarding the Incidence of Covid-19 throughout the world.</description>
 	<properties>
-		
+
 			<sonar.organization>fmart8421</sonar.organization>
 			<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
