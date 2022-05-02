@@ -34,8 +34,12 @@ public class CountryService {
                 result = fetchApi(createUrl(country, day));
                 countryCache.put(result.getName().toLowerCase(Locale.ROOT)+result.getDay(), result);
             }
-            catch(IOException | ParseException | InterruptedException e){
+            catch(IOException | ParseException e){
                 e.printStackTrace();
+
+            } catch(InterruptedException e){
+                e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         }
 
@@ -49,8 +53,12 @@ public class CountryService {
                 result = fetchApi(createUrl(country));
                 countryCache.put(result);
             }
-            catch(IOException | ParseException | InterruptedException e){
+            catch(IOException | ParseException e){
                 e.printStackTrace();
+
+            } catch(InterruptedException e){
+                e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         }
 
