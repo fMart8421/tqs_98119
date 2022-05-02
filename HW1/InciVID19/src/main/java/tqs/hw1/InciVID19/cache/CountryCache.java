@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import tqs.hw1.InciVID19.model.Country;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 @Component
 public class CountryCache {
@@ -16,7 +17,7 @@ public class CountryCache {
     private int misses;                                     // number of items requested that were not in the cache
     private int requests;
 
-
+    private final Logger log = Logger.getLogger(CountryCache.class.getName());
     public CountryCache(){
         capacity = 15;
         cache = new HashMap<>(capacity);
@@ -31,13 +32,13 @@ public class CountryCache {
 
     public void put(Country value){
         if(value == null) {
-            System.err.println("Cannot write a null object to cache");
+            log.warning("Cannot write a null object to cache");
             return;
         }
         if(!cache.containsKey(value.getName().toLowerCase(Locale.ROOT))){
-            System.out.println("Putting object with key: "+value.getName().toLowerCase(Locale.ROOT));
+            log.info("Putting object with key: "+value.getName().toLowerCase(Locale.ROOT));
             if(size()>=capacity){
-                System.out.println("Exceeded capacity, removing item with key: "+orderedKeys.get(0));
+                log.warning("Exceeded capacity, removing item with key: "+orderedKeys.get(0));
                 cache.remove(orderedKeys.get(0));
                 orderedKeys.remove(0);
             }
@@ -51,11 +52,11 @@ public class CountryCache {
     public void put(String key,Country value){
 
         if(value == null) {
-            System.err.println("Cannot write a null object to cache");
+            log.warning("Cannot write a null object to cache");
             return;
         }
         if(!cache.containsKey(key)){
-            System.out.println("Putting object with key: "+key);
+            log.info("Putting object with key: "+key);
             if(size()>=capacity){
                 cache.remove(orderedKeys.get(0));
                 orderedKeys.remove(0);
@@ -70,10 +71,10 @@ public class CountryCache {
 
     public Country get(String key){
         key = key.toLowerCase(Locale.ROOT);
-        System.out.println("Getting object with key: "+key);
+        log.info("Getting object with key: "+key);
         requests++;
         if(!cache.containsKey(key)){
-            System.err.println("Error -> No object with key: "+key);
+            log.warning("Error -> No object with key: "+key);
             misses++;
             return null;
         }

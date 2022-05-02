@@ -1,10 +1,8 @@
 package tqs.hw1.InciVID19.service;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tqs.hw1.InciVID19.InciVid19Application;
 import tqs.hw1.InciVID19.cache.CountryCache;
 import tqs.hw1.InciVID19.cache.CountryCacheDetails;
 import tqs.hw1.InciVID19.model.Country;
@@ -15,27 +13,18 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
 @Service
 @Transactional
-/**
- * This is the class that commutes with the external API.<br/>
- *
- * */
 public class CountryService {
 
-
-    //Logger log = Logger.getLogger(InciVid19Application.class.getName());
+    Logger log = Logger.getLogger(CountryService.class.getName());
 
     @Autowired
-    private CountryCache countryCache = new CountryCache();
+    private CountryCache countryCache;
 
     public Country getCountryByNameAndDay(String country, String day){
         country = country.toLowerCase(Locale.ROOT);
@@ -45,11 +34,7 @@ public class CountryService {
                 result = fetchApi(createUrl(country, day));
                 countryCache.put(result.getName().toLowerCase(Locale.ROOT)+result.getDay(), result);
             }
-            catch(IOException e){
-                e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+            catch(IOException | ParseException | InterruptedException e){
                 e.printStackTrace();
             }
         }
@@ -64,11 +49,7 @@ public class CountryService {
                 result = fetchApi(createUrl(country));
                 countryCache.put(result);
             }
-            catch(IOException e){
-                e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+            catch(IOException | ParseException | InterruptedException e){
                 e.printStackTrace();
             }
         }
@@ -140,13 +121,13 @@ public class CountryService {
         StringBuilder sb = new StringBuilder("https://covid-193.p.rapidapi.com/history?");
         sb.append("country=").append(country)
                              .append("&day=").append(day);
-        System.out.println("Fetched: "+ sb.toString());
+        log.info("Fetched: "+ sb);
         return sb.toString();
     }
     protected String createUrl(String country){
         StringBuilder sb = new StringBuilder("https://covid-193.p.rapidapi.com/history?");
         sb.append("country=").append(country);
-        System.out.println("Fetched: "+ sb.toString());
+        log.info("Fetched: "+ sb);
         return sb.toString();
     }
 
