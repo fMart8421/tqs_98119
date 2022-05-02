@@ -58,7 +58,7 @@ class Home extends Component {
             <div className="bg-blue-200 rounded-lg absolute active left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col h-3/4 min-w-max">
                 <div className="bg-marine py-4 rounded-t-lg">
                     <p className="ml-4 text-4xl font-extrabold text-white">
-                        InciVID
+                        InciVID19
                     </p>
                 </div>
                 <div className="flex mt-16">
