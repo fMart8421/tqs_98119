@@ -30,13 +30,6 @@ public class Country {
     private String day;
 
     /* Constructors */
-    public Country() {
-    }
-
-    public Country(String name, String continent) {
-        this.name = name;
-        this.continent = continent;
-    }
 
     public Country(String name,String continent, int newCases, int activeCases,int totalCases,int recovered, int newDeaths, int totalDeaths, String day) {
         this.name = name;
