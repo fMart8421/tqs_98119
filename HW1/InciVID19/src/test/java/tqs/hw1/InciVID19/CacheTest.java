@@ -34,7 +34,7 @@ public class CacheTest {
     }
 
     @Test
-    public void whenCreateNewCache_thenItShouldBeEmpty_andHaveDefaultCapacity(){
+    void whenCreateNewCache_thenItShouldBeEmpty_andHaveDefaultCapacity(){
         CountryCache countryCache2 = new CountryCache();
         assertEquals(15, countryCache2.getCapacity());
         assertEquals(new HashMap<String, Country>(), countryCache2.getCache());
