@@ -5,7 +5,14 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors:{
+        'marine': {
+          DEFAULT: '#1d2a48',
+        },
+      },
+
+    },
   },
   plugins: [
       plugin(function ({ addVariant }) {
