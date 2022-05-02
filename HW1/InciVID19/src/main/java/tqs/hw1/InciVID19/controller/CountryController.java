@@ -1,8 +1,10 @@
 package tqs.hw1.InciVID19.controller;
 
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import tqs.hw1.InciVID19.cache.CountryCacheDetails;
 import tqs.hw1.InciVID19.model.Country;
 import tqs.hw1.InciVID19.service.CountryService;
 
@@ -14,14 +16,19 @@ public class CountryController {
     @Autowired
     CountryService countryService;
 
-    @GetMapping("/{country}")
-    public Country getCountry(@PathVariable(value="country")String country) throws IOException{
-        return countryService.getCountryLatest(country);
+    @GetMapping("/api/country")
+    public Country getCountry(@RequestParam String name) throws IOException{
+        return countryService.getCountryLatest(name);
     }
 
-    @GetMapping("/{country}/{date}")
-    public Country getCountryByDate(@PathVariable(value="country")String country, @PathVariable(value="date") String date) throws IOException{
-        return countryService.getCountryByNameAndDay(country, date);
+    @GetMapping("/api/country-date")
+    public Country getCountryByDate(@RequestParam String name, @RequestParam String date) throws IOException{
+        return countryService.getCountryByNameAndDay(name, date);
+    }
+
+    @GetMapping("/api/cache-details")
+    public CountryCacheDetails getCacheDetails() throws IOException{
+        return countryService.getCacheDetails();
     }
 
 }
