@@ -15,12 +15,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import tqs.hw1.InciVID19.cache.CountryCacheDetails;
 import tqs.hw1.InciVID19.controller.CountryController;
 import tqs.hw1.InciVID19.model.Country;
 import tqs.hw1.InciVID19.service.CountryService;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 @WebMvcTest(CountryController.class)
 public class ControllerTest {
@@ -40,7 +39,7 @@ public class ControllerTest {
 
         when(countryService.getCountryLatest("portugal")).thenReturn(portugal);
 
-        mockMvc.perform(get("/{country}", "portugal").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(jsonPath("$.name", is("Portugal")));
+        mockMvc.perform(get("/api/country").param("name", "portugal").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(jsonPath("$.name", is("Portugal")));
     }
 
     @Test
@@ -49,7 +48,19 @@ public class ControllerTest {
 
         when(countryService.getCountryByNameAndDay("portugal", "2022-03-15")).thenReturn(portugal);
 
-        mockMvc.perform(get("/{country}/{date}", "portugal", "2022-03-15").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(jsonPath("$.name", is("Portugal"))).andExpect(jsonPath("$.day", is("2022-03-15")));
+        mockMvc.perform(get("/api/country-date").param("name", "portugal").param("date", "2022-03-15").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(jsonPath("$.name", is("Portugal"))).andExpect(jsonPath("$.day", is("2022-03-15")));
+
+    }
+
+    @Test
+    void whenRequestMade_thenCacheDetailsShouldUpdate() throws Exception {
+        Country portugal = new Country("Portugal", "Europe", 0, 482801, 3380263, 2876177, 0, 21285, "2022-03-15");
+        CountryCacheDetails details = new CountryCacheDetails(1,0,1);
+        when(countryService.getCountryByNameAndDay("portugal", "2022-03-15")).thenReturn(portugal);
+        when(countryService.getCacheDetails()).thenReturn(details);
+
+        mockMvc.perform(get("/api/country-date").param("name", "portugal").param("date", "2022-03-15").contentType(MediaType.APPLICATION_JSON));
+        mockMvc.perform(get("/api/cache-details").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(jsonPath("$.misses", is(1))).andExpect(jsonPath("$.requests", is(1))).andExpect(jsonPath("$.hits", is(0)));
 
     }
 
