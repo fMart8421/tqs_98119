@@ -37,13 +37,14 @@ public class CountryCache {
         if(!cache.containsKey(value.getName().toLowerCase(Locale.ROOT))){
             System.out.println("Putting object with key: "+value.getName().toLowerCase(Locale.ROOT));
             if(size()>=capacity){
+                System.out.println("Exceeded capacity, removing item with key: "+orderedKeys.get(0));
                 cache.remove(orderedKeys.get(0));
                 orderedKeys.remove(0);
             }
             else{
                 size++;
             }
-            orderedKeys.add(value.getName());
+            orderedKeys.add(value.getName().toLowerCase(Locale.ROOT));
             cache.put(value.getName().toLowerCase(Locale.ROOT),value);
         }
     }
@@ -68,8 +69,8 @@ public class CountryCache {
     }
 
     public Country get(String key){
-        System.out.println("Getting object with key: "+key);
         key = key.toLowerCase(Locale.ROOT);
+        System.out.println("Getting object with key: "+key);
         requests++;
         if(!cache.containsKey(key)){
             System.err.println("Error -> No object with key: "+key);
