@@ -15,6 +15,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.text.ParseException;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
@@ -35,10 +36,10 @@ public class CountryService {
                 countryCache.put(result.getName().toLowerCase(Locale.ROOT)+result.getDay(), result);
             }
             catch(IOException | ParseException e){
-                e.printStackTrace();
+                log.log(Level.SEVERE, "ERROR: ", e);
 
             } catch(InterruptedException e){
-                e.printStackTrace();
+                log.log(Level.SEVERE, "ERROR: ", e);
                 Thread.currentThread().interrupt();
             }
         }
@@ -54,10 +55,10 @@ public class CountryService {
                 countryCache.put(result);
             }
             catch(IOException | ParseException e){
-                e.printStackTrace();
+                log.log(Level.SEVERE, "ERROR: ", e);
 
             } catch(InterruptedException e){
-                e.printStackTrace();
+                log.log(Level.SEVERE, "ERROR: ", e);
                 Thread.currentThread().interrupt();
             }
         }

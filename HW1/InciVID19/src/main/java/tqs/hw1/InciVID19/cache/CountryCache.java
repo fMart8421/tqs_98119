@@ -71,7 +71,7 @@ public class CountryCache {
 
     public Country get(String key){
         key = key.toLowerCase(Locale.ROOT);
-        log.info("Getting object with key: "+key);
+        log.info("Getting object with key: {0}"+key);
         requests++;
         if(!cache.containsKey(key)){
             log.warning("Error -> No object with key: "+key);
