@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import tqs.hw1.InciVID19.cache.CountryCache;
 import tqs.hw1.InciVID19.model.Country;
 
+import java.util.HashMap;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CacheTest {
@@ -29,6 +31,13 @@ public class CacheTest {
     public void whenPutInCache_thenCacheShouldHaveItem(){
         countryCache.put(portugal);
         assertEquals(portugal, countryCache.get(portugal.getName()));
+    }
+
+    @Test
+    public void whenCreateNewCache_thenItShouldBeEmpty_andHaveDefaultCapacity(){
+        CountryCache countryCache2 = new CountryCache();
+        assertEquals(15, countryCache2.getCapacity());
+        assertEquals(new HashMap<String, Country>(), countryCache2.getCache());
     }
 
     @Test

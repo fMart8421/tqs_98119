@@ -87,6 +87,14 @@ public class CountryCache {
         return size;
     }
 
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public Map<String, Country> getCache() {
+        return cache;
+    }
+
     public int getHits() {
         return hits;
     }

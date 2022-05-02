@@ -48,6 +48,13 @@ public class ServiceTest {
     }
 
     @Test
+    public void whenGetCountryByNameAndDate_apiShouldBeAccessed(){
+        Country portugal = new Country("Portugal", "Europe", 0, 482801, 3380263, 2876177, 0, 21285, "2022-03-15");
+        assertEquals(portugal, countryService.getCountryByNameAndDay("portugal", "2022-03-15"));
+        verify(countryCache, VerificationModeFactory.times(1)).get(portugal.getName().toLowerCase(Locale.ROOT)+portugal.getDay());
+    }
+
+    @Test
     public void whenGetTwice_thenCacheIsCalledTwice(){
         Country portugal = new Country("Portugal", "Europe", 0, 482801, 3380263, 2876177, 0, 21285, "2022-03-15");
         Country usa = new Country("USA", "United-States", 0, 482801, 3380263, 2876177, 0, 21285, "2022-03-15");
@@ -58,6 +65,7 @@ public class ServiceTest {
         verify(countryCache, VerificationModeFactory.times(1)).get("portugal");
         verify(countryCache, VerificationModeFactory.times(1)).get("usa");
     }
+
 
 
 
