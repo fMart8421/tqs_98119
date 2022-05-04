@@ -5,7 +5,7 @@
 |          	| links 	          |
 |----------	|-----------------  |
 | frontend 	| [link](./frontend)|
-| backend  	| [link](./frontend)|
-| video    	| [link](./frontend)|
-| documents	| [link](./frontend)|
+| backend  	| [link](./InciVID)|
+| video    	| [link](./video)|
+| documents	| [link](./documents)|
 
